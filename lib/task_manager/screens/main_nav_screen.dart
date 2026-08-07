@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/cancel_task_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/completed_task_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/create_task_screen.dart';
+import 'package:task_manager_app_with_api/task_manager/screens/login_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/new_task_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/progress_task_screen.dart';
 
@@ -49,6 +51,13 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(onPressed: () async {
+            SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+            await sharedPreferences.clear();
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          }, icon: Icon(Icons.logout))
+        ],
       ),
       body: screens[selectedIndex],
       bottomNavigationBar: NavigationBar(

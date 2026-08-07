@@ -74,7 +74,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
         children: [
           SizedBox(
-            height: 90,
+            height: 100,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: taskCountList.length,
@@ -95,7 +95,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             child: ListView.builder(
                 itemCount: taskList.length,
                 itemBuilder: (context, index){
-              return TaskCard(taskModel: taskList[index], cardColor: Colors.blue, refreshParent: () {  },
+              return TaskCard(taskModel: taskList[index], cardColor: Colors.blue, refreshParent: () {
+                getAllTaskCount();
+                getAllTask();
+              },
               );
             }),
           ),
