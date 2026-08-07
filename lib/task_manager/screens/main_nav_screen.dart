@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/cancel_task_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/completed_task_screen.dart';
+import 'package:task_manager_app_with_api/task_manager/screens/create_task_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/new_task_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/progress_task_screen.dart';
 
@@ -68,6 +69,9 @@ class _MainNavScreenState extends State<MainNavScreen> {
             NavigationDestination(icon: Icon(Icons.cancel_outlined), label: 'Cancel'),
 
       ]),
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateTaskScreen()));
+      }, child: Icon(Icons.add),),
     );
   }
 }
