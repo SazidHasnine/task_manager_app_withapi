@@ -1,9 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:task_manager_app_with_api/task_manager/controller/auth_controller.dart';
 import 'package:task_manager_app_with_api/task_manager/data/models/api_response.dart';
 import 'package:task_manager_app_with_api/task_manager/data/models/user_model.dart';
 import 'package:task_manager_app_with_api/task_manager/data/service/api_caller.dart';
+import 'package:task_manager_app_with_api/task_manager/providers/auth_provider.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/main_nav_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/sign_up_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/utils/urls.dart';
@@ -17,23 +19,37 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   onTapSignUp(){
     Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
   }
 
   Future<void> login() async {
-    final ApiResponse response = await ApiCaller.postRequest(URL: TMUrls.LoginURL,
-      body: {
-        "email": _emailController.text,
-        "password": _passwordController.text
-      },
-    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    
+    bool isLogin = await authProvider.login(
+        email: _emailController.text,
+        password: _passwordController.text);
 
-    if(response.isSuccess){
-      UserModel model = UserModel.fromJson(response.responseData['data']);
-      String token = response.responseData['token'];
+    // final ApiResponse response = await ApiCaller.postRequest(URL: TMUrls.LoginURL,
+    //   body: {
+    //     "email": _emailController.text,
+    //     "password": _passwordController.text
+    //   },
+    // );
+    // ** not needed anymore because provider is used **
 
-      AuthController.saveUserData(model, token);
+    if(isLogin){
+
+      // UserModel model = UserModel.fromJson(response.responseData['data']);
+      // String token = response.responseData['token'];
+      //
+      // AuthController.saveUserData(model, token);
+      // ** not needed anymore because provider is used **
 
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainNavScreen()));
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfully logged in....!!!')));
@@ -41,10 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Something went wrong....???')));
     }
   }
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

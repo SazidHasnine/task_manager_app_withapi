@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:task_manager_app_with_api/task_manager/data/models/api_response.dart';
 import 'package:task_manager_app_with_api/task_manager/data/service/api_caller.dart';
+import 'package:task_manager_app_with_api/task_manager/providers/auth_provider.dart';
 import 'package:task_manager_app_with_api/task_manager/screens/login_screen.dart';
 import 'package:task_manager_app_with_api/task_manager/utils/urls.dart';
 import 'package:task_manager_app_with_api/task_manager/widget/screen_bg.dart';
@@ -17,25 +19,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   onTapLogin(){
     Navigator.pop(context);
   }
-  
-  Future<void> signUp() async {
-    final ApiResponse response = await ApiCaller.postRequest(URL: TMUrls.SignupURL,
-    body: {
-      "email": _emailController.text,
-      "firstName": _firstNamController.text,
-      "lastName": _lastnameController.text,
-      "mobile": _mobileController.text,
-      "password": _passwordController.text
-    },
-    );
-
-    if(response.isSuccess){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfully signed up....!!!')));
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Something went wrong....???')));
-    }
-  }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -44,6 +27,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  Future<void> signUp() async {
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    bool isSignUp = await authProvider.signUp(
+        email: _emailController.text,
+        firstName: _firstNamController.text,
+        lastName: _lastnameController.text,
+        mobile: _mobileController.text,
+        password: _passwordController.text);
+
+    // final ApiResponse response = await ApiCaller.postRequest(URL: TMUrls.SignupURL,
+    // body: {
+    //   "email": _emailController.text,
+    //   "firstName": _firstNamController.text,
+    //   "lastName": _lastnameController.text,
+    //   "mobile": _mobileController.text,
+    //   "password": _passwordController.text
+    // },
+    // );
+
+    if(isSignUp){
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfully signed up....!!!')));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Something went wrong....???')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +186,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
           
                       recognizer: TapGestureRecognizer()..onTap = onTapLogin,
+
+                    // The manual way without cascades
+                    // var myRecognizer = TapGestureRecognizer();
+                    // myRecognizer.onTap = onTapLogin;
+
+// Then pass myRecognizer to the RichText/TextSpan
+
                     ),
                   ],
                 )),

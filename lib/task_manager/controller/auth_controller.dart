@@ -13,7 +13,7 @@ class AuthController {
     sharedPreferences.setString('token', token);                                        //tkn
     sharedPreferences.setString('user-data', jsonEncode(model.toString()));
 
-    token = token;                                                                      //token = tkn
+    AuthController.token = token;                                                       //token = tkn
     userData = model;
 
   }

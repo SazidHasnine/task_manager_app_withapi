@@ -10,6 +10,7 @@ class ApiCaller {
 
   static final Logger _logger = Logger();
 
+  // getter(get) method to get data
   static Future<ApiResponse>getRequest({required String URL}) async{
 
     try{
